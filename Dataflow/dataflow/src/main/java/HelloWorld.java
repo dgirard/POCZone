@@ -15,7 +15,7 @@ import com.google.cloud.dataflow.sdk.transforms.DoFn;
 
 
 
-public class HelloWord {
+public class HelloWorld {
 
     static class PrintTimestamps extends DoFn<String, String> {
       @Override
