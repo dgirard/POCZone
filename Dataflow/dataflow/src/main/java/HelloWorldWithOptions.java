@@ -11,6 +11,8 @@ import org.joda.time.Duration;
 import java.util.List;
 import java.util.Arrays;
 import com.google.cloud.dataflow.sdk.options.*;
+import com.google.cloud.dataflow.sdk.util.gcsfs.GcsPath;
+import com.google.cloud.dataflow.sdk.io.TextIO;
 
 import com.google.cloud.dataflow.sdk.transforms.DoFn;
 
@@ -31,13 +33,15 @@ public class HelloWorldWithOptions {
 
       @Override
       public void processElement(ProcessContext c) {
-	String output = "Element: " + c.element().getKey()
-	    + " Value: " + c.element().getValue()
-	    + " Timestamp: " + c.timestamp()
-	    + " Window: (" + c.windows() 
-	    + ")";
+	String output = "Id: " + c.element().getKey()
+	    + " / NbClicks: " + c.element().getValue()
+	    + " / Timestamp: " + c.timestamp();
+	    //	    + " Window: (" + c.windows() 
+	    //	    + ")";
 	c.output(output);
-        System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
+	//        System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
+
+        System.out.println(output);
 
       }
     }
@@ -59,7 +63,6 @@ public class HelloWorldWithOptions {
     public static void main(String[] args) {
 
     // Start by defining the options for the pipeline.
-	//    PipelineOptions options = PipelineOptionsFactory.create();
     PipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(PipelineOptions.class);
 
     // Then create the pipeline.
@@ -67,6 +70,7 @@ public class HelloWorldWithOptions {
 
     long currentTimeMillis = System.currentTimeMillis();
 
+    // Create data
     List<TimestampedValue<String>> data = Arrays.asList(
 							TimestampedValue.of("b", new Instant(currentTimeMillis)),
 							TimestampedValue.of("b", new Instant(currentTimeMillis+251)),
@@ -80,32 +84,31 @@ public class HelloWorldWithOptions {
 
 
 
+    // Get a Data in a Pipeline
     PCollection<String> items = p.apply(Create.timestamped(data));
-    PCollection<String> fixed_windowed_items = items.apply(Window.<String>into(FixedWindows.of(Duration.millis(250))));
 
-    // First example : remove Duplicates
-    //    PCollection<String> windowed_remove_duplicates = fixed_windowed_items.apply(RemoveDuplicates.<String>create());
-    //    windowed_remove_duplicates.apply(ParDo.of(new PrintTimestamps()));
+    // Create 250ms windows
+    Window.Bound<String> window = Window.<String>into(FixedWindows.of(Duration.millis(250)));
+    PCollection<String> fixed_windowed_items = items.apply(window);
 
-    //    fixed_windowed_items.apply(ParDo.of(new PrintTimestamps()));
-
-
-    // Second example : count
+    // Count elements in windows
     PCollection<KV<String, Long>> windowed_counts = fixed_windowed_items.apply(Count.<String>perElement());
+
+    // Remove remove all data < 2
     PCollection<KV<String, Long>> windowed_filtered = windowed_counts.apply(ParDo.of(new FilterGreaterThan()));
-    windowed_filtered.apply(ParDo.of(new FormatCountsFn()));
 
+    // Format for printing
+    PCollection<String> windowed_outputString = windowed_filtered.apply(ParDo.of(new FormatCountsFn()));
+
+    // Write to file
+    String outputFile = GcsPath.fromUri("gs://dg-dataflow/").resolve("counts.txt").toString();
+    windowed_outputString.apply(TextIO.Write.named("WriteResult").to(outputFile));
+
+
+    System.out.println("\n\n\n");
     p.run();
+    System.out.println("\n\n\n");
 
-
-
-
-    //    PCollection<String> yetMoreLines =
-    //    p.apply(Create.of("yet", "more", "lines")).setCoder(StringUtf8Coder.of());
-
-
-
-    System.out.println("Hello Word !");
-}
+  }
 
 }
