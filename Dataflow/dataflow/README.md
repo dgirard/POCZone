@@ -132,7 +132,7 @@ If a window contains one tick, it is removed.
 ### Full example
 
 Run HelloWorldWithBigQuery : it will run on the cloud, write in Cloud Storage and BigQuery. 
-Before running it you should change some line of codes by setting correctly the BigQuery and Storage settings.
+Before running it you should change some lines of code by setting correctly the BigQuery and Storage settings.
 ```java
 
 ```
