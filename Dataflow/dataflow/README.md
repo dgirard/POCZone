@@ -138,7 +138,7 @@ Before running it you should change some line of codes by setting correctly the 
 ```
 
 ```
-mvn  clean install exec:java -Dexec.mainClass=HelloWorldWithCloudDeployement -Dexec.args=" --project=<YourProjectId>  --runner=BlockingDataflowPipelineRunner --stagingLocation=gs://<yourbucket>/test/staging"
+mvn  clean install exec:java -Dexec.mainClass=HelloWorldBigQuery -Dexec.args=" --project=<YourProjectId>  --runner=BlockingDataflowPipelineRunner --stagingLocation=gs://<yourbucket>/test/staging"
 ```
 
 ![Filtering window](images/df-globalarchitecture.png)
