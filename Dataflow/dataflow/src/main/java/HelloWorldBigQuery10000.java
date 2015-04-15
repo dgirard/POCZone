@@ -23,17 +23,16 @@ import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 
 
-
+// 
 public class HelloWorldBigQuery10000 {
 
     static class PrintTimestamps extends DoFn<String, String> {
       @Override
       public void processElement(ProcessContext c) {
-	  c.output(c.element() + ":" + c.timestamp().getMillis() + c.windows());
-	  System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
+	  c.output(c.element() + ":" + c.timestamp().getMillis());
+	  System.out.println(c.element() + ":" + c.timestamp().getMillis());
       }
     }
-
 
     // Format for text File
     static class FormatCountsFn extends DoFn<KV<String, Long>, String> {
@@ -44,17 +43,12 @@ public class HelloWorldBigQuery10000 {
 	String output = "Id: " + c.element().getKey()
 	    + " / NbClicks: " + c.element().getValue()
 	    + " / Timestamp: " + c.timestamp();
-	    //	    + " Window: (" + c.windows() 
-	    //	    + ")";
 	c.output(output);
-	//        System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
-
         System.out.println(output);
-
       }
     }
 
-    // Format for BigQuery
+    // Format data for BigQuery (TableRow)
     static class FormatBigQuery extends DoFn<KV<String, Long>, TableRow> {
 	private static final long serialVersionUID = 0;
 
@@ -68,6 +62,8 @@ public class HelloWorldBigQuery10000 {
     }
     }
 
+
+    // Remove element with value greater than 2
     static class FilterGreaterThan extends DoFn<KV<String, Long>, KV<String,Long>> {
 	private static final long serialVersionUID = 0;
 
@@ -79,7 +75,6 @@ public class HelloWorldBigQuery10000 {
 	  }
       }
     }
-
 
 
     public static void main(String[] args) {

@@ -18,13 +18,13 @@ import com.google.cloud.dataflow.sdk.transforms.DoFn;
 
 
 
-public class HelloWorldWithOptions {
+public class HelloWorldWithCloudDeployement {
 
     static class PrintTimestamps extends DoFn<String, String> {
       @Override
       public void processElement(ProcessContext c) {
-	  c.output(c.element() + ":" + c.timestamp().getMillis() + c.windows());
-	  System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
+	  c.output(c.element() + ":" + c.timestamp().getMillis());
+	  System.out.println(c.element() + ":" + c.timestamp().getMillis());
       }
     }
 
@@ -33,16 +33,11 @@ public class HelloWorldWithOptions {
 
       @Override
       public void processElement(ProcessContext c) {
-	String output = "Id: " + c.element().getKey()
-	    + " / NbClicks: " + c.element().getValue()
-	    + " / Timestamp: " + c.timestamp();
-	    //	    + " Window: (" + c.windows() 
-	    //	    + ")";
+	String output = "Element: " + c.element().getKey()
+	    + " Value: " + c.element().getValue()
+	    + " Timestamp: " + c.timestamp();
 	c.output(output);
-	//        System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
-
         System.out.println(output);
-
       }
     }
 
@@ -72,15 +67,15 @@ public class HelloWorldWithOptions {
 
     // Create data
     List<TimestampedValue<String>> data = Arrays.asList(
-							TimestampedValue.of("b", new Instant(currentTimeMillis)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+251)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+253)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+501)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+770)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+774)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+778)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+1780)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+11756)));
+	TimestampedValue.of("b", new Instant(currentTimeMillis)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+251)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+253)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+501)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+770)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+774)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+778)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+1780)),
+	TimestampedValue.of("b", new Instant(currentTimeMillis+11756)));
 
 
 

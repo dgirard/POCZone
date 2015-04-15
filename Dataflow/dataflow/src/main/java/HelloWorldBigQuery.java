@@ -27,10 +27,11 @@ import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 public class HelloWorldBigQuery {
 
     static class PrintTimestamps extends DoFn<String, String> {
+
       @Override
       public void processElement(ProcessContext c) {
-	  c.output(c.element() + ":" + c.timestamp().getMillis() + c.windows());
-	  System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
+	  c.output(c.element() + ":" + c.timestamp().getMillis());
+	  System.out.println(c.element() + ":" + c.timestamp().getMillis());
       }
     }
 
@@ -44,13 +45,8 @@ public class HelloWorldBigQuery {
 	String output = "Id: " + c.element().getKey()
 	    + " / NbClicks: " + c.element().getValue()
 	    + " / Timestamp: " + c.timestamp();
-	    //	    + " Window: (" + c.windows() 
-	    //	    + ")";
 	c.output(output);
-	//        System.out.println(c.element() + ":" + c.timestamp().getMillis() + c.windows());
-
         System.out.println(output);
-
       }
     }
 
@@ -93,17 +89,16 @@ public class HelloWorldBigQuery {
     long currentTimeMillis = System.currentTimeMillis();
 
     // Create data
-    List<TimestampedValue<String>> data = Arrays.asList(
-							TimestampedValue.of("b", new Instant(currentTimeMillis)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+251)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+253)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+501)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+770)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+774)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+778)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+1780)),
-							TimestampedValue.of("b", new Instant(currentTimeMillis+11756)));
-
+    List<TimestampedValue<String>> data = 
+        Arrays.asList(TimestampedValue.of("b", new Instant(currentTimeMillis)),
+		      TimestampedValue.of("b", new Instant(currentTimeMillis+251)),
+                      TimestampedValue.of("b", new Instant(currentTimeMillis+253)),
+		      TimestampedValue.of("b", new Instant(currentTimeMillis+501)),
+		      TimestampedValue.of("b", new Instant(currentTimeMillis+770)),
+		      TimestampedValue.of("b", new Instant(currentTimeMillis+774)),
+		      TimestampedValue.of("b", new Instant(currentTimeMillis+778)),
+		      TimestampedValue.of("b", new Instant(currentTimeMillis+1780)),
+		      TimestampedValue.of("b", new Instant(currentTimeMillis+11756)));
 
 
     // Get a Data in a Pipeline
