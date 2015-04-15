@@ -128,5 +128,10 @@ If a window contains one tick, it is removed.
 ```
 
 
+### Global Architecture
+![Filtering window](images/df-globalarchitecture.png)
+
+
+
 
 
