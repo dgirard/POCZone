@@ -1,3 +1,4 @@
+### How to run
 
 Run HelloWorld : it will run locally
 ```
@@ -8,6 +9,7 @@ Run HelloWorldWithCloudDeployement : it will run on the cloud
 ```
 mvn  clean install exec:java -Dexec.mainClass=HelloWorldWithCloudDeployement -Dexec.args=" --project=<YourProjectId>  --runner=BlockingDataflowPipelineRunner --stagingLocation=gs://<yourbucket>/test/staging"
 ```
+### Understanding
 
 Inspired by : "The introduction to Reactive Programming you've been missing"
 https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
