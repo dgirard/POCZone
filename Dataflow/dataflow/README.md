@@ -9,6 +9,7 @@ Run HelloWorldWithCloudDeployement : it will run on the cloud
 ```
 mvn  clean install exec:java -Dexec.mainClass=HelloWorldWithCloudDeployement -Dexec.args=" --project=<YourProjectId>  --runner=BlockingDataflowPipelineRunner --stagingLocation=gs://<yourbucket>/test/staging"
 ```
+
 ### Understanding
 
 Inspired by : "The introduction to Reactive Programming you've been missing"
@@ -121,14 +122,25 @@ If a window contains one tick, it is removed.
     // Write
     windowed_filtered.apply(ParDo.of(new FormatBigQuery()))
         .apply(BigQueryIO.Write
-           .to("deuxmilledollars:temp.res")
+           .to("<yourproject>:<yourdataset>.res")
            .withSchema(schema)
            .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
            .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
 ```
 
 
-### Global Architecture
+### Full example
+
+Run HelloWorldWithBigQuery : it will run on the cloud, write in Cloud Storage and BigQuery. 
+Before running it you should change some line of codes by setting correctly the BigQuery and Storage settings.
+```java
+
+```
+
+```
+mvn  clean install exec:java -Dexec.mainClass=HelloWorldWithCloudDeployement -Dexec.args=" --project=<YourProjectId>  --runner=BlockingDataflowPipelineRunner --stagingLocation=gs://<yourbucket>/test/staging"
+```
+
 ![Filtering window](images/df-globalarchitecture.png)
 
 
