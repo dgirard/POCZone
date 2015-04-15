@@ -12,7 +12,7 @@ In this example we will use Dataflow to filter "ticks" on a 250ms fixed windows.
 If a window contains one tick, it is removed.
 
 Here is the Timeline with ticks :
-![Ticks](/images/df-ticks.png)
+![Ticks](images/df-ticks.png)
 
 Code for creating and adding data to a Pipeline
 ```java
