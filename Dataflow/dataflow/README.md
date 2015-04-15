@@ -61,5 +61,72 @@ If a window contains one tick, it is removed.
 ```
 
 
+###### Writing to System.out (not a good idea :)
+```java
+ // Define a formater
+   static class FormatCountsFn extends DoFn<KV<String, Long>, String> {
+        private static final long serialVersionUID = 0;
+
+      @Override
+      public void processElement(ProcessContext c) {
+        String output = "Id: " + c.element().getKey()
+            + " / NbClicks: " + c.element().getValue()
+            + " / Timestamp: " + c.timestamp();
+        c.output(output);
+        System.out.println(output);
+      }
+    }
+    ....
+    ....
+    ....
+
+    // Use the formater
+    PCollection<String> windowed_outputString = windowed_filtered.apply(ParDo.of(new FormatCountsFn()));
+```
+
+###### Writing to Cloud Storage
+```java
+   String outputFile = GcsPath.fromUri("gs://<YOURBUCKET>/").resolve("counts.txt").toString();
+   windowed_outputString.apply(TextIO.Write.named("WriteResult").to(outputFile));
+```
+
+
+###### Writing to BigQuery
+```java
+
+   // Define a "formater" for BigQuery
+    static class FormatBigQuery extends DoFn<KV<String, Long>, TableRow> {
+        private static final long serialVersionUID = 0;
+
+    @Override
+        public void processElement(ProcessContext c) {
+        TableRow row = new TableRow()
+            .set("Id", c.element().getKey())
+            .set("Count", c.element().getValue().longValue())
+            .set("TimeStamp", ""+c.timestamp());
+        c.output(row);
+    }
+    }
+    ....
+    ....
+    ....
+
+   // Create the schema of the BigQuery table
+   List<TableFieldSchema> fields = new ArrayList<TableFieldSchema>();
+    fields.add(new TableFieldSchema().setName("Id").setType("STRING"));
+    fields.add(new TableFieldSchema().setName("Count").setType("INTEGER"));
+    fields.add(new TableFieldSchema().setName("TimeStamp").setType("STRING"));
+    TableSchema schema = new TableSchema().setFields(fields);
+
+    // Write
+    windowed_filtered.apply(ParDo.of(new FormatBigQuery()))
+        .apply(BigQueryIO.Write
+           .to("deuxmilledollars:temp.res")
+           .withSchema(schema)
+           .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
+           .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE));
+```
+
+
 
 
