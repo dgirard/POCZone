@@ -1,22 +1,22 @@
 ### How to run
 
-Run HelloWorld : it will run locally
+Use HelloWorld class to run it locally
 ```
 mvn clean install exec:java -Dexec.mainClass=HelloWorld
 ```
 
-Run HelloWorldWithCloudDeployement : it will run on the cloud
+Use HelloWorldWithCloudDeployement class to run it on Google Cloud
 ```
 mvn  clean install exec:java -Dexec.mainClass=HelloWorldWithCloudDeployement -Dexec.args=" --project=<YourProjectId>  --runner=BlockingDataflowPipelineRunner --stagingLocation=gs://<yourbucket>/test/staging"
 ```
 
-### Understanding
+### Explanations
 
-Inspired by : "The introduction to Reactive Programming you've been missing"
-https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
+Inspired by : "[The introduction to Reactive Programming you've been missing](
+https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)"
 
-In this example we will use Dataflow to filter "ticks" on a 250ms fixed windows.
-If a window contains one tick, it is removed.
+In this example we will use Dataflow to filter "ticks" in a 250ms fixed windows.
+If a 250ms window contains only one tick, it is removed.
 
 ###### Here is the Timeline with ticks :
 ![Ticks](images/df-ticks.png)
@@ -54,7 +54,7 @@ If a window contains one tick, it is removed.
     PCollection<KV<String, Long>> windowed_counts = fixed_windowed_items.apply(Count.<String>perElement());
 ```
 
-###### Filtering all the window with one tick
+###### Filtering all the window with only one tick
 ![Filtering window](images/df-filtering.png)
 ```java
     // Remove remove all data < 2
@@ -131,8 +131,8 @@ If a window contains one tick, it is removed.
 
 ### Full example
 
-Run HelloWorldWithBigQuery : it will run on the cloud, write in Cloud Storage and BigQuery. 
-Before running it you should change some lines of code by setting correctly the BigQuery and Storage settings.
+Use HelloWorldWithBigQuery class to run it on Google cloud and write to Cloud Storage and BigQuery. 
+Before running it, make sure you update the code with your own settings for the BigQuery table name and cloud Storage bucket name.
 ```java
 
 ```
@@ -142,7 +142,6 @@ mvn  clean install exec:java -Dexec.mainClass=HelloWorldBigQuery -Dexec.args=" -
 ```
 
 ![Filtering window](images/df-globalarchitecture.png)
-
 
 
 
