@@ -100,13 +100,16 @@ public class HelloWorldBigQuery10000 {
     PCollection<String> fixed_windowed_items = items.apply(window);
 
     // Count elements in windows
-    PCollection<KV<String, Long>> windowed_counts = fixed_windowed_items.apply(Count.<String>perElement());
+    PCollection<KV<String, Long>> windowed_counts =
+	fixed_windowed_items.apply(Count.<String>perElement());
 
     // Remove remove all data < 2
-    PCollection<KV<String, Long>> windowed_filtered = windowed_counts.apply(ParDo.of(new FilterGreaterThan()));
+    PCollection<KV<String, Long>> windowed_filtered =
+	windowed_counts.apply(ParDo.of(new FilterGreaterThan()));
 
     // Format for printing
-    PCollection<String> windowed_outputString = windowed_filtered.apply(ParDo.of(new FormatCountsFn()));
+    PCollection<String> windowed_outputString =
+	windowed_filtered.apply(ParDo.of(new FormatCountsFn()));
 
     // Write to file
     String outputFile = GcsPath.fromUri("gs://dg-dataflow/").resolve("counts.txt").toString();
